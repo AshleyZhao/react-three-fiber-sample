@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import ReactDOM from 'react-dom'
 
 import { createRoot } from 'react-dom/client'
-import { Canvas } from '@react-three/fiber'
+import { Canvas,useFrame,useLoader } from '@react-three/fiber'
 import { OrbitControls, Stars } from "@react-three/drei";
-import { Physics, usePlane, useBox } from "@react-three/cannon";
+import * as THREE from "three";
+import moon1 from './images/moon_surface.jpg'
+import { Physics, usePlane, useBox, useSphere } from "@react-three/cannon";
 import "./styles.css";
 
 
@@ -31,7 +33,25 @@ function Plane() {
 	return (
 		<mesh ref={ref} rotation={[-Math.PI / 2, 0, 0]}>
 			<planeBufferGeometry attach="geometry" args={[100, 100]} />
-			<meshLambertMaterial attach="material" color="lightblue" />
+			<meshLambertMaterial attach="material" />
+		</mesh>
+	);
+}
+
+function Sphere() {
+	const base=new THREE.TextureLoader().load(moon1)
+	const [ref, api] = useSphere(() => ({ mass: 1, position: [0, 2, 0] }));
+	return (
+		<mesh
+			onClick={() => {
+				api.velocity.set(0, 2, 0);
+			}}
+			ref={ref}
+			position={[0, 2, 0]}
+		>
+			<sphereGeometry attach="geometry" args={[2, 32, 32]} />
+			<directionalLight intensity={0.5} />
+			<meshBasicMaterial map={base} color="white" />
 		</mesh>
 	);
 }
@@ -43,8 +63,12 @@ createRoot(document.getElementById('root')).render(
 		<ambientLight intensity={0.5} />
 		<spotLight position={[10, 15, 10]} angle={0.3} />
 		<Physics>
-			<Box />
+			
+			{/* <Box />
+			<Plane /> */}
+			<Sphere />
 			<Plane />
+
 		</Physics>
 	</Canvas>
 );
