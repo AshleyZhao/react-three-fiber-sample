@@ -6,8 +6,11 @@ import { Canvas,useFrame,useLoader } from '@react-three/fiber'
 import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import moon1 from './images/moon_surface.jpg'
+import moonD from './images/moon_displacement.jpg'
 import { Physics, usePlane, useBox, useSphere } from "@react-three/cannon";
 import "./styles.css";
+import { useTexture } from "@react-three/drei"
+
 
 
 function Box() {
@@ -39,7 +42,11 @@ function Plane() {
 }
 
 function Sphere() {
+	/* Basic sphere */
 	const base=new THREE.TextureLoader().load(moon1)
+	/* Displacement map */
+	const displacementMap = new THREE.TextureLoader().load(moonD)
+
 	const [ref, api] = useSphere(() => ({ mass: 1, position: [0, 2, 0] }));
 	return (
 		<mesh
@@ -51,7 +58,7 @@ function Sphere() {
 		>
 			<sphereGeometry attach="geometry" args={[2, 32, 32]} />
 			<directionalLight intensity={0.5} />
-			<meshBasicMaterial map={base} color="white" />
+			<meshStandardMaterial displacementScale={0.4} map={base} displacementMap={displacementMap} color="white" />
 		</mesh>
 	);
 }
