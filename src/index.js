@@ -58,7 +58,7 @@ function Sphere() {
 		>
 			<sphereGeometry attach="geometry" args={[2, 32, 32]} />
 			<directionalLight intensity={0.5} />
-			<meshStandardMaterial displacementScale={0.4} map={base} displacementMap={displacementMap} color="white" />
+			<meshStandardMaterial displacementScale={0.3} map={base} displacementMap={displacementMap} color="white" />
 		</mesh>
 	);
 }
