@@ -35,8 +35,8 @@ function Plane() {
 	}));
 	return (
 		<mesh ref={ref} rotation={[-Math.PI / 2, 0, 0]}>
-			<planeBufferGeometry attach="geometry" args={[100, 100]} />
-			<meshLambertMaterial attach="material" />
+			<planeBufferGeometry attach="geometry" args={[100, 100]} opacity={0}/>
+			<meshPhongMaterial color="#ffffff" opacity={0.0} transparent />
 		</mesh>
 	);
 }
@@ -58,7 +58,7 @@ function Sphere() {
 		>
 			<sphereGeometry attach="geometry" args={[2, 32, 32]} />
 			<directionalLight intensity={0.5} />
-			<meshStandardMaterial displacementScale={0.3} map={base} displacementMap={displacementMap} color="white" />
+			<meshStandardMaterial displacementScale={0.2} map={base} displacementMap={displacementMap} color="white" depthWrite={true} metalness={0.4} roughness={0.7}/>
 		</mesh>
 	);
 }
@@ -66,13 +66,11 @@ function Sphere() {
 createRoot(document.getElementById('root')).render(
 	<Canvas>
 		<OrbitControls />
+		<pointLight color="#faf3ea" position={[0,200,200]} intensity={0.5} />
 		<Stars />
-		<ambientLight intensity={0.5} />
-		<spotLight position={[10, 15, 10]} angle={0.3} />
+		{/* <spotLight position={[10, 15, 10]} angle={0.3} /> */}
 		<Physics>
 			
-			{/* <Box />
-			<Plane /> */}
 			<Sphere />
 			<Plane />
 
