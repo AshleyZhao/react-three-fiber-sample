@@ -11,7 +11,7 @@ import { Physics, usePlane, useBox, useSphere } from "@react-three/cannon";
 import "./styles.css";
 import { useTexture } from "@react-three/drei"
 
-
+const myHTML = `<h1>John Doe</h1>`;
 
 function Box() {
 	const [ref, api] = useBox(() => ({ mass: 1, position: [0, 2, 0] }));
@@ -47,14 +47,19 @@ function Sphere() {
 	/* Displacement map */
 	const displacementMap = new THREE.TextureLoader().load(moonD)
 
-	const [ref, api] = useSphere(() => ({ mass: 1, position: [0, 2, 0] }));
+	const sphereref = useRef();
+
+	useFrame(() => {
+		sphereref.current.rotation.y += 0.01;
+	  });
+
 	return (
 		<mesh
-			onClick={() => {
-				api.velocity.set(0, 2, 0);
-			}}
-			ref={ref}
+			ref={sphereref}
 			position={[0, 2, 0]}
+
+			rotation-x={Math.PI} 
+			rotation-y={Math.PI}
 		>
 			<sphereGeometry attach="geometry" args={[2, 32, 32]} />
 			<directionalLight intensity={0.5} />
@@ -64,13 +69,14 @@ function Sphere() {
 }
 
 createRoot(document.getElementById('root')).render(
+	
 	<Canvas>
 		<OrbitControls />
 		<pointLight color="#faf3ea" position={[0,200,200]} intensity={0.5} />
 		<Stars />
 		{/* <spotLight position={[10, 15, 10]} angle={0.3} /> */}
 		<Physics>
-			
+		
 			<Sphere />
 			<Plane />
 
