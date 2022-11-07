@@ -68,6 +68,43 @@ function Sphere() {
 	);
 }
 
+// This code only reads CSV files
+window.onload = () => {
+	// (A) FILE PICKER
+	let picker = document.getElementById("demoA");
+   
+	// (B) READ CSV FILE
+	picker.onchange = () => {
+	  // (B1) GET SELECTED CSV FILE
+	  let selected = picker.files[0];
+   
+	  // (B2) READ CSV INTO ARRAY
+	  let reader = new FileReader();
+	  reader.addEventListener("loadend", () => {
+		// (B2-1) SPLIT ROWS & COLUMNS
+		let temp = reader.result.split("\r\n");
+		for (let i in temp) {
+		  temp[i] = temp[i].split(",");
+		}
+   
+		// (B2-2) REARRANGE KEYS & VALUES
+		let data = {};
+		for (let i in temp[0]) {
+		  data[temp[0][i]] = [];
+		  for (let j=1; j<temp.length; j++) {
+			data[temp[0][i]].push(temp[j][i]);
+		  }
+		}
+   
+		// (B2-3) DONE!
+		// data = JSON.stringify(data);
+		// picker.value = "";
+		console.log(data);
+	  });
+	  reader.readAsText(selected);
+	};
+  };
+
 createRoot(document.getElementById('root')).render(
 	
 	<Canvas>
