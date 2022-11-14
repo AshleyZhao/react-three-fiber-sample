@@ -11,7 +11,43 @@ import { Physics, usePlane, useBox, useSphere } from "@react-three/cannon";
 import "./styles.css";
 import { useTexture } from "@react-three/drei"
 
-const myHTML = `<h1>John Doe</h1>`;
+// This code only reads CSV files
+window.onload = () => {
+	// (A) FILE PICKER
+	let picker = document.getElementById("demoA");
+   
+	// (B) READ CSV FILE
+	picker.onchange = () => {
+	  // (B1) GET SELECTED CSV FILE
+	  let selected = picker.files[0];
+   
+	  // (B2) READ CSV INTO ARRAY
+	  let reader = new FileReader();
+	  reader.addEventListener("loadend", () => {
+		// (B2-1) SPLIT ROWS & COLUMNS
+		let temp = reader.result.split("\r\n");
+		for (let i in temp) {
+		  temp[i] = temp[i].split(",");
+		}
+   
+		// (B2-2) REARRANGE KEYS & VALUES
+		let data = {};
+		for (let i in temp[0]) {
+		  data[temp[0][i]] = [];
+		  for (let j=1; j<temp.length; j++) {
+			data[temp[0][i]].push(temp[j][i]);
+		  }
+		}
+   
+		// (B2-3) DONE!
+		// data = JSON.stringify(data);
+		// picker.value = "";
+		console.log(data);
+	  });
+	  reader.readAsText(selected);
+	};
+  };
+
 
 function Box() {
 	const [ref, api] = useBox(() => ({ mass: 1, position: [0, 2, 0] }));
@@ -68,42 +104,63 @@ function Sphere() {
 	);
 }
 
-// This code only reads CSV files
-window.onload = () => {
-	// (A) FILE PICKER
-	let picker = document.getElementById("demoA");
-   
-	// (B) READ CSV FILE
-	picker.onchange = () => {
-	  // (B1) GET SELECTED CSV FILE
-	  let selected = picker.files[0];
-   
-	  // (B2) READ CSV INTO ARRAY
-	  let reader = new FileReader();
-	  reader.addEventListener("loadend", () => {
-		// (B2-1) SPLIT ROWS & COLUMNS
-		let temp = reader.result.split("\r\n");
-		for (let i in temp) {
-		  temp[i] = temp[i].split(",");
-		}
-   
-		// (B2-2) REARRANGE KEYS & VALUES
-		let data = {};
-		for (let i in temp[0]) {
-		  data[temp[0][i]] = [];
-		  for (let j=1; j<temp.length; j++) {
-			data[temp[0][i]].push(temp[j][i]);
+/* const Torus = (props) => {
+
+	const dummy = new Object3D();
+	extend({ OrbitControls });
+
+	const torusRef = useRef();
+
+	useFrame(({ clock }) => {
+		const time = clock.getElapsedTime();
+		meshRef.current.rotation.x = Math.sin(time / 4);
+		meshRef.current.rotation.y = Math.sin(time / 2);
+		let i = 0;
+		const amount = 10;
+		const offset = (amount - 1) / 2;
+	
+		for (let x = 0; x < amount; x++) {
+		  for (let y = 0; y < amount; y++) {
+			for (let z = 0; z < amount; z++) {
+			  dummy.position.set(offset - x, offset - y, offset - z);
+			  dummy.rotation.y =
+				Math.sin(x / 2 + time) +
+				Math.sin(y / 3 + time) +
+				Math.sin(z / 4 + time);
+			  dummy.rotation.z = dummy.rotation.y * 2;
+	
+			  dummy.updateMatrix();
+	
+			  meshRef.current.setMatrixAt(i++, dummy.matrix);
+			}
+			meshRef.current.instanceMatrix.needsUpdate = true;
 		  }
 		}
-   
-		// (B2-3) DONE!
-		// data = JSON.stringify(data);
-		// picker.value = "";
-		console.log(data);
 	  });
-	  reader.readAsText(selected);
-	};
+  
+	return (
+	  <mesh ref={torusRef}>
+		<torusGeometry args={[1, 0.5, 38, 24]} />
+		<meshBasicMaterial attach="material" args={[100, .5 , 50 ,50]} color="white"/>
+	  </mesh>
+	);
   };
+ */
+
+function Dot(props) {
+
+	const { positions } = useMemo(() => {
+		
+	})
+
+	const mesh = useRef();
+
+	return (
+	  <mesh ref={mesh} scale={[1, 1, 1]} position={[1.2, 0, 0]}>
+		<circleBufferGeometry attach="geometry" args={[0.05, 100]} />      <meshNormalMaterial attach="material" />
+	  </mesh>
+	);
+  }
 
 createRoot(document.getElementById('root')).render(
 	
@@ -113,10 +170,14 @@ createRoot(document.getElementById('root')).render(
 		<Stars />
 		{/* <spotLight position={[10, 15, 10]} angle={0.3} /> */}
 		<Physics>
-		
+			<Dot />
 			<Sphere />
 			<Plane />
+			
 
 		</Physics>
+		
+		
+		
 	</Canvas>
 );
